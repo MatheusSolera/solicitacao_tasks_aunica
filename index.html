@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Solicitação de Tarefas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Jura:wght@400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h2>Solicitação de Tarefas</h2>
+    <div style="height:50px;display:flex;align-items:center;justify-content:center">
+      <img src="img/logo.png" alt="Logo Aunica" style="height:100%;max-height:50px;object-fit:contain" loading="lazy">
+    </div>
+  </header>
+
+  <main>
+    <h1>Formulário de Tarefa</h1>
+    <div id="taskForm">
+      <label>Tipo da Solicitação</label>
+      <div class="radio-group">
+        <label class="radio-option">
+          <input type="radio" name="tipo" value="consultar" checked>
+          <span>Consultar Task</span>
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="tipo" value="criar">
+          <span>Criar Task</span>
+        </label>
+      </div>
+
+      <label for="idProjeto">Projeto</label>
+      <select id="idProjeto"></select>
+
+      <div id="tipoTaskGroup" style="display:none">
+        <label>Tipo de Item</label>
+        <div class="radio-group">
+          <label class="radio-option">
+            <input type="radio" name="tipoItem" value="task" checked>
+            <span>Task</span>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="tipoItem" value="subtask" disabled>
+            <span>Subtask</span>
+          </label>
+        </div>
+      </div>
+
+      <label for="idTask">ID da Task</label>
+      <input type="text" id="idTask">
+
+      <div id="nomeTaskGroup">
+        <label for="nomeTask">Nome da Task</label>
+        <input type="text" id="nomeTask">
+      </div>
+
+      <div id="camposExtras" style="display:none">
+        <div style="display:flex;gap:1rem;flex-wrap:wrap;margin:3px">
+          <div style="flex:1 1 30%;min-width:150px;margin:3px">
+            <label for="clienteNome">Cliente</label>
+            <input type="text" id="clienteNome" placeholder="Nome do Cliente">
+          </div>
+          <div style="flex:1 1 30%;min-width:150px;margin:3px">
+            <label for="area">Área</label>
+            <input type="text" id="area" placeholder="Design UX, Tech, Dados...">
+          </div>
+          <div style="flex:1 1 30%;min-width:150px;margin:3px">
+            <label for="tipoTarefa">Tipo de Tarefa</label>
+            <input type="text" id="tipoTarefa" placeholder="Documentação, Implementação, Dashboard...">
+          </div>
+        </div>
+      </div>
+
+      <label for="descricao">Descrição da Task</label>
+      <textarea id="descricao" rows="4"></textarea>
+
+      <div id="blocoData">
+        <label for="dataInicio">Data de Início</label>
+        <input type="date" id="dataInicio">
+
+        <label for="dataFim">Data de Fim</label>
+        <input type="date" id="dataFim">
+
+        <label for="horasEstimadas">Horas Estimadas</label>
+        <input type="number" id="horasEstimadas" min="0" step="0.1">
+      </div>
+
+      <div id="blocoPrioridade" style="display:none">
+        <label for="prioridade">Prioridade</label>
+        <select id="prioridade">
+          <option value="">Selecione a prioridade</option>
+          <option value="urgente">Urgente</option>
+          <option value="alto">Alto</option>
+          <option value="medio">Médio</option>
+          <option value="baixo">Baixo</option>
+        </select>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:1rem;margin-top:16px">
+        <button type="button" onclick="enviarTask()">Enviar</button>
+        <div id="loader" class="loader" style="width:24px;height:24px;margin:0"></div>
+        <div id="mensagem" style="margin:0;min-width:100px;text-align:left"></div>
+      </div>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
