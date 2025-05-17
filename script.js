@@ -1,5 +1,6 @@
 const API_URL = 'https://prod-30.brazilsouth.logic.azure.com:443/workflows/e57b8efd7a6b472aae5371054b261c7b/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Zw2AXHRvfhgFshDYj_9el5SdXs8oSi8NeiPqvY4hte8';
 const API_URL_PROJECTS = 'https://prod-04.brazilsouth.logic.azure.com:443/workflows/166d18ba5b5b4869ac65a3474387fd0d/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=298XlawPnXeH4RRcSjShQJsBwGc0TDgIYxBJ7Dis0xQ';
+const API_URL_CLIENTS = 'https://prod-14.brazilsouth.logic.azure.com:443/workflows/497655b552354c0b9b74959c0ba49120/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=vllv3DqdR6FXKq7WhzyHSxyBI6fy3OhYj6cCbAQIlEs';
 
 const camposCondicionais = ['idProjeto', 'nomeTask', 'descricao', 'dataInicio', 'dataFim', 'horasEstimadas'].map(id => document.getElementById(id));
 const tipoRadios = document.querySelectorAll('input[name="tipo"]');
@@ -127,7 +128,7 @@ const endpoints = {
     payload: () => ({
       event_name: "criar",
       project_id: document.getElementById("idProjeto").value,
-      title: `${document.getElementById("clienteNome").value} | ${document.getElementById("area").value} | ${document.getElementById("tipoTarefa").value}`,
+      title: `${document.getElementById("idClient").value} | ${document.getElementById("area").value} | ${document.getElementById("tipoTarefa").value}`,
       description: convertDescription(document.getElementById("descricao").value, "html"),
       prioridade: document.getElementById("prioridade").value,
       tipoItem: document.querySelector('input[name="tipoItem"]:checked')?.value || null
@@ -215,6 +216,33 @@ async function carregarProjetos() {
   }
 }
 
+async function carregarClientes() {
+  try {
+    const res = await fetch(API_URL_CLIENTS, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" }
+    });
+
+    const data = await res.json();
+    const clientSelect = document.getElementById("idClient");
+    clientSelect.innerHTML = "";
+
+    const opt = document.createElement("option");
+    opt.value = "";
+    opt.textContent = "Selecione um cliente";
+    clientSelect.appendChild(opt);
+
+    data.data.forEach(client => {
+      const option = document.createElement("option");
+      option.value = client.id;
+      option.textContent = client.name;
+      clientSelect.appendChild(option);
+    });
+  } catch (error) {
+    console.error("Erro ao carregar clientes:", error);
+  }
+}
+
 tipoRadios.forEach(radio => radio.addEventListener("change", () => {
   toggleFields();
 }));
@@ -222,4 +250,5 @@ tipoRadios.forEach(radio => radio.addEventListener("change", () => {
 window.addEventListener("DOMContentLoaded", () => {
   toggleFields();
   carregarProjetos();
+  carregarClientes();
 });

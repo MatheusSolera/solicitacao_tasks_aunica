@@ -52,16 +52,22 @@
       <div id="camposExtras" style="display:none">
         <div style="display:flex;gap:1rem;flex-wrap:wrap;margin:3px">
           <div style="flex:1 1 30%;min-width:150px;margin:3px">
-            <label for="clienteNome">Cliente</label>
-            <input type="text" id="clienteNome" placeholder="Nome do Cliente" required>
+            <label for="idClient">Clientes</label>
+            <select id="idClient" required></select>
           </div>
           <div style="flex:1 1 30%;min-width:150px;margin:3px">
             <label for="area">Área</label>
-            <input type="text" id="area" placeholder="Design UX, Tech, Dados..." required>
+            <select id="area" required>
+              <option value="">Selecione a área</option>
+              <option value="Design UX">Design UX</option>
+              <option value="Martech">Martech</option>
+              <option value="Dados">Dados</option>
+              <option value="Governança">Governança</option>
+            </select>
           </div>
           <div style="flex:1 1 30%;min-width:150px;margin:3px">
             <label for="tipoTarefa">Tipo de Tarefa</label>
-            <input type="text" id="tipoTarefa" placeholder="Documentação, Implementação, Dashboard..." required>
+            <input type="text" id="tipoTarefa" placeholder="Documentação, Implementação, Dashboard..." style="width: 100%; box-sizing: border-box;" required>
           </div>
         </div>
       </div>
