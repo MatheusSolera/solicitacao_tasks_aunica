@@ -10,6 +10,11 @@ function toggleFields() {
   document.getElementById("tipoTaskGroup").style.display = isCriar ? "block" : "none";
   document.getElementById("blocoPrioridade").style.display = isCriar ? "block" : "none";
   document.getElementById("camposExtras").style.display = isCriar ? "block" : "none";
+  document.getElementById("idClient").style.display = isCriar ? "block" : "none";
+  document.getElementById("area").style.display = isCriar ? "block" : "none";
+  document.getElementById("tipoTarefa").style.display = isCriar ? "block" : "none";
+  document.getElementById("prioridade").style.display = isCriar ? "block" : "none";
+
 
   const isConsultar = document.querySelector('input[name="tipo"]:checked').value === "consultar";
   camposCondicionais.forEach(el => el.disabled = isConsultar);
@@ -128,7 +133,7 @@ const endpoints = {
     payload: () => ({
       event_name: "criar",
       project_id: document.getElementById("idProjeto").value,
-      title: `${document.getElementById("idClient").value} | ${document.getElementById("area").value} | ${document.getElementById("tipoTarefa").value}`,
+      title: `${document.querySelector("#idClient option:checked").textContent} | ${document.getElementById("area").value} | ${document.getElementById("tipoTarefa").value}`,
       description: convertDescription(document.getElementById("descricao").value, "html"),
       prioridade: document.getElementById("prioridade").value,
       tipoItem: document.querySelector('input[name="tipoItem"]:checked')?.value || null
