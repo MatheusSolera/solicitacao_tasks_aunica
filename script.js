@@ -248,6 +248,11 @@ async function carregarClientes() {
   }
 }
 
+document.querySelectorAll("input, textarea, select").forEach(el => {
+  el.focus({ preventScroll: true });
+});
+
+
 tipoRadios.forEach(radio => radio.addEventListener("change", () => {
   toggleFields();
 }));
@@ -256,4 +261,6 @@ window.addEventListener("DOMContentLoaded", () => {
   toggleFields();
   carregarProjetos();
   carregarClientes();
+  window.scrollTo(0, 0);
 });
+
