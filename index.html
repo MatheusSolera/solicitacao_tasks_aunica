@@ -108,6 +108,8 @@
     }
 
     #mensagem {
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
       display: none;
       margin-top: 1rem;
       padding: 0.75rem;
@@ -127,7 +129,22 @@
       color: #721c24;
       border: 1px solid #f5c6cb;
     }
-  </style>
+  .loader {
+  display: none;
+  margin: 1rem auto;
+  border: 6px solid #f3f3f3;
+  border-top: 6px solid #4A00E0;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+</style>
 </head>
 <body>
   <header>
@@ -150,8 +167,8 @@
         </label>
       </div>
 
-      <label for="idProjeto">ID do Projeto</label>
-      <input type="text" id="idProjeto">
+      <label for="idProjeto">Projeto</label>
+      <select id="idProjeto"></select>
 
       <div id="tipoTaskGroup" style="display: none;">
         <label>Tipo de Item</label>
@@ -161,7 +178,7 @@
             <span>Task</span>
           </label>
           <label class="radio-option">
-            <input type="radio" name="tipoItem" value="subtask">
+            <input type="radio" name="tipoItem" value="subtask" disabled>
             <span>Subtask</span>
           </label>
         </div>
@@ -170,21 +187,54 @@
       <label for="idTask">ID da Task</label>
       <input type="text" id="idTask">
 
-      <label for="nomeTask">Nome da Task</label>
-      <input type="text" id="nomeTask">
+      <div id="nomeTaskGroup">
+        <label for="nomeTask">Nome da Task</label>
+        <input type="text" id="nomeTask">
+      </div>
+
+      <div id="camposExtras" style="display: none;">
+  <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin: 3px;">
+    <div style="flex: 1 1 30%; min-width: 150px; margin: 3px;">
+      <label for="clienteNome">Cliente</label>
+      <input type="text" id="clienteNome" placeholder="Nome do Cliente">
+    </div>
+    <div style="flex: 1 1 30%; min-width: 150px; margin: 3px;">
+      <label for="area">Área</label>
+      <input type="text" id="area" placeholder="Design UX, Tech, Dados...">
+    </div>
+    <div style="flex: 1 1 30%; min-width: 150px; margin: 3px;">
+      <label for="tipoTarefa">Tipo de Tarefa</label>
+      <input type="text" id="tipoTarefa" placeholder="Documentação, Implementação, Dashboard...">
+    </div>
+  </div>
+</div>
 
       <label for="descricao">Descrição da Task</label>
       <textarea id="descricao" rows="4"></textarea>
 
-      <label for="dataInicio">Data de Início</label>
-      <input type="date" id="dataInicio">
+      <div id="blocoData">
+        <label for="dataInicio">Data de Início</label>
+        <input type="date" id="dataInicio">
 
-      <label for="dataFim">Data de Fim</label>
-      <input type="date" id="dataFim">
+        <label for="dataFim">Data de Fim</label>
+        <input type="date" id="dataFim">
 
-      <label for="horasEstimadas">Horas Estimadas</label>
-      <input type="number" id="horasEstimadas" min="0" step="0.1">
+        <label for="horasEstimadas">Horas Estimadas</label>
+        <input type="number" id="horasEstimadas" min="0" step="0.1">
+      </div>
 
+      <div id="blocoPrioridade" style="display: none;">
+        <label for="prioridade">Prioridade</label>
+        <select id="prioridade">
+          <option value="">Selecione a prioridade</option>
+          <option value="urgente">Urgente</option>
+          <option value="alto">Alto</option>
+          <option value="medio">Médio</option>
+          <option value="baixo">Baixo</option>
+        </select>
+      </div>
+
+      <div id="loader" class="loader"></div>
       <div id="mensagem"></div>
       <button type="button" onclick="enviarTask()">Enviar</button>
     </div>
@@ -203,58 +253,139 @@
     const tipoRadios = document.querySelectorAll('input[name="tipo"]');
 
     function toggleFields() {
+      const isCriar = document.querySelector('input[name="tipo"]:checked').value === 'criar';
+      document.getElementById('blocoData').style.display = isCriar ? 'none' : 'block';
+      document.getElementById('blocoPrioridade').style.display = isCriar ? 'block' : 'none';
+      document.getElementById('nomeTaskGroup').style.display = isCriar ? 'none' : 'block';
+      document.getElementById('camposExtras').style.display = isCriar ? 'block' : 'none';
+      document.getElementById('idTask').value = '';
+      document.getElementById('nomeTask').value = '';
+      document.getElementById('descricao').value = '';
+      document.getElementById('dataInicio').value = '';
+      document.getElementById('dataFim').value = '';
+      document.getElementById('horasEstimadas').value = '';
+      document.getElementById('idProjeto').selectedIndex = 0;
+
       const isConsultar = document.querySelector('input[name="tipo"]:checked').value === 'consultar';
       camposCondicionais.forEach(el => el.disabled = isConsultar);
       document.getElementById('tipoTaskGroup').style.display = isConsultar ? 'none' : 'block';
     }
 
-    tipoRadios.forEach(radio => radio.addEventListener('change', toggleFields));
-    window.addEventListener('DOMContentLoaded', toggleFields);
+    tipoRadios.forEach(radio => radio.addEventListener('change', () => {
+      toggleFields();
+      carregarProjetos();
+    }));
+
+    window.addEventListener('DOMContentLoaded', () => {
+      toggleFields();
+      carregarProjetos();
+    });
 
     function exibirMensagem(texto, sucesso = true) {
       const msg = document.getElementById('mensagem');
       msg.className = sucesso ? 'sucesso' : 'erro';
       msg.textContent = texto;
       msg.style.display = 'block';
+      setTimeout(() => msg.style.opacity = '1', 10);
       setTimeout(() => {
-        msg.style.display = 'none';
-        msg.textContent = '';
-      }, 5000);
+        msg.style.opacity = '0';
+        setTimeout(() => {
+          msg.style.display = 'none';
+          msg.textContent = '';
+        }, 500);
+      }, 2000);
     }
 
-    async function enviarTask() {
-      const tipo = document.querySelector('input[name="tipo"]:checked').value;
-      const tipoItem = document.querySelector('input[name="tipoItem"]:checked')?.value || null;
+    const API_URL = 'https://prod-30.brazilsouth.logic.azure.com:443/workflows/e57b8efd7a6b472aae5371054b261c7b/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Zw2AXHRvfhgFshDYj_9el5SdXs8oSi8NeiPqvY4hte8';
 
-      const payload = {
-        event_name: tipo,
-        task_id: document.getElementById('idTask').value
-      };
+    const API_URL_PROJECTS = 'https://prod-04.brazilsouth.logic.azure.com:443/workflows/166d18ba5b5b4869ac65a3474387fd0d/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=298XlawPnXeH4RRcSjShQJsBwGc0TDgIYxBJ7Dis0xQ'
+
+    const endpoints = {
+      consultar: {
+        payload: () => ({
+          event_name: 'consultar',
+          task_id: document.getElementById('idTask').value
+        }),
+        handleResponse: (data) => {
+          document.getElementById('nomeTask').value = data.title || '';
+          document.getElementById('descricao').value = data.description ? data.description.replace(/<[^>]*>/g, '') : '';
+          document.getElementById('idProjeto').value = data.project_id || '';
+          document.getElementById('dataInicio').value = data.datetime ? data.datetime.split(' ')[0] : '';
+          document.getElementById('dataFim').value = data.deadline ? data.deadline.split(' ')[0] : '';
+          document.getElementById('horasEstimadas').value = data.estimated_hours || '';
+        }
+      },
+      criar: {
+        payload: () => ({
+          event_name: 'criar',
+          project_id: document.getElementById('idProjeto').value,
+          title: `${document.getElementById('clienteNome').value} | ${document.getElementById('area').value} | ${document.getElementById('tipoTarefa').value}`,
+          description: `<p>${document.getElementById('descricao').value}</p>`,
+          prioridade: document.getElementById('prioridade').value,
+          tipoItem: document.querySelector('input[name="tipoItem"]:checked')?.value || null
+        }),
+        handleResponse: (data) => {
+          exibirMensagem('Tarefa criada com sucesso!', true);
+        }
+      }
+    };
+
+    async function enviarTask() {
+      document.getElementById('loader').style.display = 'block';
+      const tipo = document.querySelector('input[name="tipo"]:checked').value;
+      const endpoint = endpoints[tipo];
+
+      if (!endpoint) {
+        exibirMensagem('Tipo de solicitação não suportado.', false);
+        return;
+      }
 
       try {
-        const response = await fetch('https://prod-30.brazilsouth.logic.azure.com:443/workflows/e57b8efd7a6b472aae5371054b261c7b/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Zw2AXHRvfhgFshDYj_9el5SdXs8oSi8NeiPqvY4hte8', {
+        const response = await fetch(API_URL, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(payload)
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(endpoint.payload())
         });
 
         if (!response.ok) throw new Error('Erro ao consultar API');
 
         const data = await response.json();
+        endpoint.handleResponse(data);
+        document.getElementById('loader').style.display = 'none';
 
-        document.getElementById('nomeTask').value = data.title || '';
-        document.getElementById('descricao').value = data.description ? data.description.replace(/<[^>]*>/g, '') : '';
-        document.getElementById('idProjeto').value = data.project_id || '';
-        document.getElementById('dataInicio').value = data.datetime ? data.datetime.split(' ')[0] : '';
-        document.getElementById('dataFim').value = data.deadline ? data.deadline.split(' ')[0] : '';
-        document.getElementById('horasEstimadas').value = data.estimated_hours || '';
-
-        exibirMensagem('Dados carregados com sucesso!', true);
+        if (tipo === 'consultar') {
+          exibirMensagem('Dados carregados com sucesso!', true);
+        }
       } catch (error) {
         console.error('Erro ao enviar ou processar:', error);
+        document.getElementById('loader').style.display = 'none';
         exibirMensagem('Erro ao consultar a API. Verifique o console.', false);
+      }
+    }
+
+    async function carregarProjetos() {
+      try {
+        const response = await fetch(API_URL_PROJECTS, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        const result = await response.json();
+        const select = document.getElementById('idProjeto');
+
+        select.innerHTML = '';
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.textContent = 'Selecione um projeto';
+        select.appendChild(defaultOption);
+
+        result.data.forEach(project => {
+          const option = document.createElement('option');
+          option.value = project.id;
+          option.textContent = project.name;
+          select.appendChild(option);
+        });
+      } catch (error) {
+        console.error('Erro ao carregar projetos:', error);
       }
     }
   </script>
