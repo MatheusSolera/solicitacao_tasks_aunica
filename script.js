@@ -248,6 +248,10 @@ async function carregarClientes() {
   }
 }
 
+if ("scrollRestoration" in history) {
+  history.scrollRestoration = "manual";
+}
+
 document.querySelectorAll("input, textarea, select").forEach(el => {
   el.focus({ preventScroll: true });
 });
