@@ -49,33 +49,33 @@
         </div>
       </div>
 
+      <div id="camposExtras" style="display:none">
+        <div style="display:flex;gap:1rem;flex-wrap:wrap;margin:3px">
+          <div style="flex:1 1 30%;min-width:150px;margin:3px">
+            <label for="clienteNome">Cliente</label>
+            <input type="text" id="clienteNome" placeholder="Nome do Cliente" required>
+          </div>
+          <div style="flex:1 1 30%;min-width:150px;margin:3px">
+            <label for="area">Área</label>
+            <input type="text" id="area" placeholder="Design UX, Tech, Dados..." required>
+          </div>
+          <div style="flex:1 1 30%;min-width:150px;margin:3px">
+            <label for="tipoTarefa">Tipo de Tarefa</label>
+            <input type="text" id="tipoTarefa" placeholder="Documentação, Implementação, Dashboard..." required>
+          </div>
+        </div>
+      </div>
+
       <label for="idTask">ID da Task</label>
-      <input type="text" id="idTask">
+      <input type="text" id="idTask" required>
 
       <div id="nomeTaskGroup">
         <label for="nomeTask">Nome da Task</label>
         <input type="text" id="nomeTask">
       </div>
 
-      <div id="camposExtras" style="display:none">
-        <div style="display:flex;gap:1rem;flex-wrap:wrap;margin:3px">
-          <div style="flex:1 1 30%;min-width:150px;margin:3px">
-            <label for="clienteNome">Cliente</label>
-            <input type="text" id="clienteNome" placeholder="Nome do Cliente">
-          </div>
-          <div style="flex:1 1 30%;min-width:150px;margin:3px">
-            <label for="area">Área</label>
-            <input type="text" id="area" placeholder="Design UX, Tech, Dados...">
-          </div>
-          <div style="flex:1 1 30%;min-width:150px;margin:3px">
-            <label for="tipoTarefa">Tipo de Tarefa</label>
-            <input type="text" id="tipoTarefa" placeholder="Documentação, Implementação, Dashboard...">
-          </div>
-        </div>
-      </div>
-
       <label for="descricao">Descrição da Task</label>
-      <textarea id="descricao" rows="4"></textarea>
+      <textarea id="descricao" rows="10" required></textarea>
 
       <div id="blocoData">
         <label for="dataInicio">Data de Início</label>
@@ -90,12 +90,12 @@
 
       <div id="blocoPrioridade" style="display:none">
         <label for="prioridade">Prioridade</label>
-        <select id="prioridade">
+        <select id="prioridade" required>
           <option value="">Selecione a prioridade</option>
-          <option value="urgente">Urgente</option>
-          <option value="alto">Alto</option>
-          <option value="medio">Médio</option>
-          <option value="baixo">Baixo</option>
+          <option value="3">Urgente</option>
+          <option value="2">Alto</option>
+          <option value="1">Médio</option>
+          <option value="0">Baixo</option>
         </select>
       </div>
 
