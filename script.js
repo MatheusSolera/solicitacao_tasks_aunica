@@ -6,6 +6,7 @@ const camposCondicionais = ['idProjeto', 'nomeTask', 'descricao', 'dataInicio', 
 const tipoRadios = document.querySelectorAll('input[name="tipo"]');
 
 function toggleFields() {
+
   const isCriar = document.querySelector('input[name="tipo"]:checked').value === "criar";
   document.getElementById("tipoTaskGroup").style.display = isCriar ? "block" : "none";
   document.getElementById("blocoPrioridade").style.display = isCriar ? "block" : "none";
@@ -29,6 +30,9 @@ function toggleFields() {
   document.getElementById("dataFim").value = "";
   document.getElementById("horasEstimadas").value = "";
   document.getElementById("idProjeto").selectedIndex = 0;
+
+
+  document.getElementById("submit").textContent = isConsultar ? "Consultar" : "Enviar";
   
 
   //limpa sinais de erro nos campos required que estao vazios
