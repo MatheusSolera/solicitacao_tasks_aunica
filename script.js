@@ -137,7 +137,7 @@ const endpoints = {
     payload: () => ({
       event_name: "criar",
       project_id: document.getElementById("idProjeto").value,
-      title: `${document.querySelector("#idClient option:checked").textContent} | ${document.getElementById("area").value} | ${document.getElementById("tipoTarefa").value}`,
+      title: `${document.querySelector("#idClient option:checked").textContent} | ${document.getElementById("area").value} | ${document.getElementById("idTask").value} | ${document.getElementById("tipoTarefa").value}`,
       description: convertDescription(document.getElementById("descricao").value, "html"),
       prioridade: document.getElementById("prioridade").value,
       tipoItem: document.querySelector('input[name="tipoItem"]:checked')?.value || null
